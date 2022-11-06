@@ -18,6 +18,14 @@ export const resolvers = {
     },
   },
 
+  Mutation: {
+    registerUser: (_parent, args, context) => {
+      return context.prisma.user.create({
+        data: args.input,
+      })
+    },
+  },
+
   User: {
     posts: (user, _args, context) => {
       return context.prisma.post.findMany({
