@@ -19,7 +19,7 @@ export const resolvers = {
   },
 
   Mutation: {
-    registerUser: (_parent, args, context) => {
+    register: (_parent, args, context) => {
       return context.prisma.user.create({
         data: args.input,
       })
@@ -28,7 +28,7 @@ export const resolvers = {
 
   User: {
     posts: (user, _args, context) => {
-      return context.prisma.post.findMany({
+      return context.prisma.post.findUnique({
         where: { authorId: user.id },
       })
     },
