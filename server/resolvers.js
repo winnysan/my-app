@@ -39,11 +39,12 @@ export const resolvers = {
   },
 
   User: {
-    // N+1 problem !
     posts: (user, _args, context) => {
-      return context.prisma.post.findMany({
-        where: { authorId: user.id },
-      })
+      return context.prisma.user
+        .findUnique({
+          where: { id: user.id },
+        })
+        .posts()
     },
   },
 
