@@ -5,10 +5,10 @@ import { expressjwt } from 'express-jwt'
 import { readFile } from 'fs/promises'
 import jwt from 'jsonwebtoken'
 import { resolvers } from './resolvers.js'
-import { context } from './context.js'
+import { prisma, context } from './context.js'
 
 const PORT = 9000
-const JWT_SECRET = Buffer.from('Kn8Q5tyZ/V1MHltc4F/pTkVJMlrbKiZt', 'base64')
+const JWT_SECRET = Buffer.from('Kn8Q5tyV/V1MHltc4K/pTkVJMlrbKiZv', 'base64')
 
 const app = express()
 app.use(
@@ -20,6 +20,22 @@ app.use(
     secret: JWT_SECRET,
   })
 )
+
+app.post('/login', async (request, response) => {
+  const { name, password } = request.body
+  const user = await prisma.user.findUnique({
+    where: { name },
+  })
+  if (user && user.password === password) {
+    const token = jwt.sign({ sub: user.id }, JWT_SECRET)
+    return response.status(201).json({
+      user: { id: user.id, name: user.name },
+      token,
+    })
+  } else {
+    return response.sendStatus(401)
+  }
+})
 
 const typeDefs = await readFile('./schema.graphql', 'utf8')
 const apolloServer = new ApolloServer({ typeDefs, resolvers, context })

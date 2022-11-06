@@ -1,9 +1,11 @@
 import { PrismaClient } from '@prisma/client'
 
-const prisma = new PrismaClient({
+export const prisma = new PrismaClient({
   log: ['query'],
 })
 
-export const context = {
-  prisma: prisma,
+export function context() {
+  return {
+    prisma,
+  }
 }
