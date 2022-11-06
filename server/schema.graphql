@@ -10,6 +10,10 @@ type Mutation {
   createPost(body: String!): Post
 }
 
+type Subscription {
+  postAdded: Post
+}
+
 type User {
   id: ID!
   name: String!
@@ -19,7 +23,8 @@ type User {
 
 type Post {
   id: ID!
-  body: String
+  body: String!
+  authorId: ID!
   author: User
 }
 

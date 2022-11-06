@@ -1,3 +1,7 @@
+import { PubSub } from 'graphql-subscriptions'
+
+const pubSub = new PubSub()
+
 export const resolvers = {
   Query: {
     users: (_parent, _args, context) => {
@@ -24,17 +28,25 @@ export const resolvers = {
         data: args.input,
       })
     },
-    createPost: (_parent, args, context) => {
+    createPost: async (_parent, args, context) => {
       if (!context.req.auth) {
         throw new Error('Unauthorized')
       }
       const authorId = context.req.auth.sub
-      return context.prisma.post.create({
+      const post = await context.prisma.post.create({
         data: {
           body: args.body,
           authorId: authorId,
         },
       })
+      pubSub.publish('POST_ADDED', { postAdded: post })
+      return post
+    },
+  },
+
+  Subscription: {
+    postAdded: {
+      subscribe: () => pubSub.asyncIterator('POST_ADDED'),
     },
   },
 
