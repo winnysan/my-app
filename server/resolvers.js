@@ -1,5 +1,11 @@
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
+
 export const resolvers = {
   Query: {
-    greeting: () => 'Hello world!',
+    users: () => {
+      return prisma.user.findMany()
+    },
   },
 }
