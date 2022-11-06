@@ -1,8 +1,19 @@
 type Query {
   users: [User!]!
+  posts: [Post!]!
+  user(id: String): User
+  post(id: String): Post
 }
 
 type User {
   id: ID!
   name: String!
+  password: String!
+  posts: [Post!]!
+}
+
+type Post {
+  id: ID!
+  body: String
+  author: User
 }

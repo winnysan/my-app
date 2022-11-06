@@ -5,6 +5,7 @@ import { expressjwt } from 'express-jwt'
 import { readFile } from 'fs/promises'
 import jwt from 'jsonwebtoken'
 import { resolvers } from './resolvers.js'
+import { context } from './context.js'
 
 const PORT = 9000
 const JWT_SECRET = Buffer.from('Kn8Q5tyZ/V1MHltc4F/pTkVJMlrbKiZt', 'base64')
@@ -21,7 +22,7 @@ app.use(
 )
 
 const typeDefs = await readFile('./schema.graphql', 'utf8')
-const apolloServer = new ApolloServer({ typeDefs, resolvers })
+const apolloServer = new ApolloServer({ typeDefs, resolvers, context })
 await apolloServer.start()
 apolloServer.applyMiddleware({ app, path: '/graphql' })
 
