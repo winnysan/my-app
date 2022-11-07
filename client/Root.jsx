@@ -1,34 +1,25 @@
+import * as SecureStore from 'expo-secure-store'
 import { useContext, useEffect } from 'react'
 import { AuthContext } from './context/AuthProvider'
 import { NavigationContainer } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createStackNavigator } from '@react-navigation/stack'
-import { Text, TouchableOpacity, View } from 'react-native'
 import { AntDesign } from '@expo/vector-icons'
 import LoginScreen from './screens/LoginScreen'
 import RegisterScreen from './screens/RegisterScreen'
-import * as SecureStore from 'expo-secure-store'
-import Posts from './components/Posts'
+import HomeScreen from './screens/HomeScreen'
+import NewPostScreen from './screens/NewPostScreen'
+import SettingsScreen from './screens/SettingsScreen'
 
 const Tab = createBottomTabNavigator()
 const Stack = createStackNavigator()
 
-function HomeScreen() {
+function HomeScreenStack() {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Posts />
-    </View>
-  )
-}
-
-function Settings() {
-  const { logout } = useContext(AuthContext)
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <TouchableOpacity onPress={() => logout()}>
-        <Text>Logout</Text>
-      </TouchableOpacity>
-    </View>
+    <Stack.Navigator screenOptions={{ headerShown: false, headerBackTitleVisible: false }}>
+      <Stack.Screen name="HomeScreen" component={HomeScreen} />
+      <Stack.Screen name="NewPostScreen" component={NewPostScreen} options={{ headerShown: true, headerTitle: '' }} />
+    </Stack.Navigator>
   )
 }
 
@@ -49,17 +40,17 @@ export default function Root() {
     <>
       {user ? (
         <NavigationContainer>
-          <Tab.Navigator>
+          <Tab.Navigator screenOptions={{ headerShown: false }}>
             <Tab.Screen
               name="Home"
-              component={HomeScreen}
+              component={HomeScreenStack}
               options={{
                 tabBarIcon: ({ color, size }) => <AntDesign name="home" size={size} color={color} />,
               }}
             />
             <Tab.Screen
               name="Settings"
-              component={Settings}
+              component={SettingsScreen}
               options={{
                 tabBarIcon: ({ color, size }) => <AntDesign name="setting" size={size} color={color} />,
               }}
@@ -68,9 +59,9 @@ export default function Root() {
         </NavigationContainer>
       ) : (
         <NavigationContainer>
-          <Stack.Navigator>
+          <Stack.Navigator screenOptions={{ headerShown: false, headerBackTitleVisible: false }}>
             <Stack.Screen name="Login" component={LoginScreen} />
-            <Stack.Screen name="Register" component={RegisterScreen} />
+            <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: true, headerTitle: '' }} />
           </Stack.Navigator>
         </NavigationContainer>
       )}

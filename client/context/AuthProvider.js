@@ -1,7 +1,7 @@
-import { createContext, useState } from 'react'
 import * as SecureStore from 'expo-secure-store'
-import axios from 'axios'
+import { createContext, useState } from 'react'
 import { URI } from '../graphql/client'
+import axios from 'axios'
 
 export const AuthContext = createContext()
 
