@@ -1,34 +1,29 @@
-import { useQuery } from '@apollo/client'
-import { View, Text, StyleSheet, FlatList } from 'react-native'
-import { GET_POSTS } from './graphql/queries'
+import { NavigationContainer } from '@react-navigation/native'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { Text, View } from 'react-native'
+import Posts from './screens/Posts'
 
-export default function Root() {
-  const { data, loading } = useQuery(GET_POSTS, {
-    fetchPolicy: 'network-only',
-  })
+const Tab = createBottomTabNavigator()
 
-  const renderItem = ({ item }) => (
-    <View>
-      <Text>{item.body}</Text>
-    </View>
-  )
+function HomeScreen() {
+  return <Posts />
+}
 
+function Screen() {
   return (
-    <View style={styles.container}>
-      {loading ? (
-        <Text>Loading...</Text>
-      ) : (
-        <FlatList data={data.posts} renderItem={renderItem} keyExtractor={(item) => item.id} />
-      )}
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Screen</Text>
     </View>
   )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-})
+export default function Root() {
+  return (
+    <NavigationContainer>
+      <Tab.Navigator>
+        <Tab.Screen name="Home" component={HomeScreen} />
+        <Tab.Screen name="Screen" component={Screen} />
+      </Tab.Navigator>
+    </NavigationContainer>
+  )
+}
