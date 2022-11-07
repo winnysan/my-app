@@ -1,6 +1,6 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client'
 
-const URI = 'https://195a-87-197-106-202.eu.ngrok.io'
+const URI = 'https://af36-2a01-c846-8c2-6100-b045-3fc2-2084-63f9.eu.ngrok.io'
 
 export const apolloClient = new ApolloClient({
   uri: `${URI}/graphql`,
