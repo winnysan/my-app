@@ -1,18 +1,11 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { ApolloProvider } from '@apollo/client'
+import { apolloClient } from './graphql/client'
+import Root from './Root'
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Expo | React Native</Text>
-    </View>
+    <ApolloProvider client={apolloClient}>
+      <Root />
+    </ApolloProvider>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-})
