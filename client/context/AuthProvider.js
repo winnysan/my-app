@@ -11,18 +11,18 @@ export function AuthProvider({ children }) {
   async function login(name, password) {
     await axios
       .post(`${URI}/login`, { name, password })
-      .then(response => {
+      .then((response) => {
         SecureStore.setItemAsync('user', JSON.stringify(response.data))
         setUser(response.data.user)
-        console.log('[login]', response.data)
+        console.info('[login]', response.data)
       })
-      .catch(error => console.error(error))
+      .catch((error) => console.error(error))
   }
 
   async function logout() {
     setUser(null)
     SecureStore.deleteItemAsync('user')
-    console.log('[logout]')
+    console.info('[logout]')
   }
 
   return (
