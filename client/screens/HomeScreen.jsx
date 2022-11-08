@@ -1,15 +1,15 @@
 import { SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native'
 import { AntDesign } from '@expo/vector-icons'
-import Posts from '../components/Posts'
+import PostsList from '../components/PostsList'
 
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen({ route, navigation }) {
   function gotoNewPost() {
     navigation.navigate('NewPostScreen')
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Posts />
+    <SafeAreaView style={{ flex: 1, marginTop: 40 }}>
+      <PostsList route={route} />
       <TouchableOpacity style={styles.floatingButton} onPress={() => gotoNewPost()}>
         <AntDesign name="plus" size={24} color="#fff" />
       </TouchableOpacity>

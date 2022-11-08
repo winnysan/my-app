@@ -5,6 +5,10 @@ export const GET_POSTS = gql`
     posts {
       id
       body
+      author {
+        id
+        name
+      }
     }
   }
 `
