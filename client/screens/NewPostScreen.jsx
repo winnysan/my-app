@@ -1,33 +1,35 @@
 import { useMutation } from '@apollo/client'
 import { useState } from 'react'
-import {
-  ActivityIndicator,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import { ActivityIndicator, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { CREATE_POST } from '../graphql/mutations'
+import { GET_POSTS } from '../graphql/queries'
 
 export default function NewPostScreen({ navigation }) {
-  const [body, setBody] = useState(
-    `Content of random [${Math.floor(Math.random() * 1000) + 1}] post...`
-  )
+  const [body, setBody] = useState(`[${Math.floor(Math.random() * 1000) + 1}] `)
   const [loading, setLoading] = useState(false)
 
-  const [mutate] = useMutation(CREATE_POST)
+  const [addPostMutation] = useMutation(CREATE_POST, {
+    variables: { body: body },
+    update(cache, { data: { createPost } }) {
+      let data = cache.readQuery({ query: GET_POSTS })
+      data = {
+        ...data,
+        posts: [...data.posts, createPost],
+      }
+      cache.writeQuery({ query: GET_POSTS, data })
+    },
+  })
 
-  async function handleSubmit() {
+  function handleSubmit() {
     setLoading(true)
-    mutate({ variables: { body: body } })
-      .then(result => {
+    addPostMutation()
+      .then((result) => {
         setLoading(false)
         navigation.navigate('HomeScreen', {
           newPostAdded: result.data?.createPost,
         })
       })
-      .catch(error => {
+      .catch((error) => {
         setLoading(false)
         console.error('[NewPost]', error)
       })
@@ -37,11 +39,7 @@ export default function NewPostScreen({ navigation }) {
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <TextInput style={styles.input} value={body} onChangeText={setBody} multiline />
       <TouchableOpacity style={styles.button} onPress={() => handleSubmit()} disabled={loading}>
-        {loading ? (
-          <ActivityIndicator size="small" />
-        ) : (
-          <Text style={{ color: '#fff' }}>Submit</Text>
-        )}
+        {loading ? <ActivityIndicator size="small" /> : <Text style={{ color: '#fff' }}>Submit</Text>}
       </TouchableOpacity>
     </View>
   )

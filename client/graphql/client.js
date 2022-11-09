@@ -2,7 +2,7 @@ import * as SecureStore from 'expo-secure-store'
 import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client'
 import { setContext } from '@apollo/client/link/context'
 
-export const URI = 'https://bc33-2a01-c846-8c2-6100-b5db-31c5-6f1c-930b.eu.ngrok.io'
+export const URI = 'https://1b60-87-197-106-202.eu.ngrok.io'
 
 const httpLink = createHttpLink({
   uri: `${URI}/graphql`,
