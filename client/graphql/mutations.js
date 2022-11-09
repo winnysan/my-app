@@ -5,6 +5,7 @@ export const CREATE_POST = gql`
     createPost(body: $body) {
       id
       body
+      createdAt
       author {
         id
         name

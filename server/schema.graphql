@@ -26,9 +26,12 @@ type Post {
   body: String!
   authorId: ID!
   author: User
+  createdAt: DateTime!
 }
 
 input registerInput {
   name: String!
   password: String!
 }
+
+scalar DateTime

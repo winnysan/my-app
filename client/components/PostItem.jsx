@@ -5,7 +5,7 @@ export default function PostItem({ item: post }) {
     <View style={styles.container}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
         <Text style={{ fontSize: 12, color: 'gray' }}>author: {post.author.name}</Text>
-        <Text style={{ fontSize: 12, color: 'gray' }}>author ID: {post.author.id}</Text>
+        <Text style={{ fontSize: 12, color: 'gray' }}>dateTime: {post.createdAt}</Text>
       </View>
       <View>
         <Text style={{ fontSize: 12 }}>{post.body}</Text>

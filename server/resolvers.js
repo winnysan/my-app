@@ -8,7 +8,9 @@ export const resolvers = {
       return context.prisma.user.findMany()
     },
     posts: (_parent, _args, context) => {
-      return context.prisma.post.findMany()
+      return context.prisma.post.findMany({
+        orderBy: [{ createdAt: 'desc' }],
+      })
     },
     user: (_parent, args, context) => {
       return context.prisma.user.findUnique({
