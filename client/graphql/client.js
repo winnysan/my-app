@@ -1,11 +1,15 @@
 import * as SecureStore from 'expo-secure-store'
-import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client'
+import { ApolloClient, InMemoryCache, createHttpLink, split } from '@apollo/client'
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
+import { getMainDefinition } from '@apollo/client/utilities'
+import { createClient as createWsClient } from 'graphql-ws'
 import { setContext } from '@apollo/client/link/context'
+import { Kind } from 'graphql'
 
-export const URI = 'https://1b60-87-197-106-202.eu.ngrok.io'
+export const URI = '1b60-87-197-106-202.eu.ngrok.io'
 
 const httpLink = createHttpLink({
-  uri: `${URI}/graphql`,
+  uri: `https://${URI}/graphql`,
 })
 
 const authLink = setContext(async (_, { headers }) => {
@@ -22,7 +26,18 @@ const authLink = setContext(async (_, { headers }) => {
   }
 })
 
+const wsLink = new GraphQLWsLink(
+  createWsClient({
+    url: `wss://${URI}/graphql`,
+  })
+)
+
+function isSubscription({ query }) {
+  const definition = getMainDefinition(query)
+  return definition.kind === Kind.OPERATION_DEFINITION && definition.operation === 'subscription'
+}
+
 export const apolloClient = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link: split(isSubscription, wsLink, authLink.concat(httpLink)),
   cache: new InMemoryCache(),
 })

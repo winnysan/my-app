@@ -1,5 +1,5 @@
 import * as SecureStore from 'expo-secure-store'
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { AuthContext } from './context/AuthProvider'
 import { NavigationContainer } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
@@ -10,6 +10,8 @@ import RegisterScreen from './screens/RegisterScreen'
 import HomeScreen from './screens/HomeScreen'
 import NewPostScreen from './screens/NewPostScreen'
 import SettingsScreen from './screens/SettingsScreen'
+import { useSubscription } from '@apollo/client'
+import { POST_ADDED_SUBSCRIPTION } from './graphql/subscriptions'
 
 const Tab = createBottomTabNavigator()
 const Stack = createStackNavigator()
@@ -25,16 +27,24 @@ function HomeScreenStack() {
 
 export default function Root() {
   const { user, setUser } = useContext(AuthContext)
+  const [badge, setBadge] = useState(false)
 
   useEffect(() => {
     SecureStore.getItemAsync('user')
-      .then(storeUser => {
+      .then((storeUser) => {
         if (storeUser) {
           setUser(JSON.parse(storeUser).user)
         }
       })
-      .catch(error => console.error(error))
+      .catch((error) => console.error(error))
   }, [])
+
+  useSubscription(POST_ADDED_SUBSCRIPTION, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      console.log('[subscriptionData]', subscriptionData)
+      setBadge(true)
+    },
+  })
 
   return (
     <>
@@ -46,6 +56,7 @@ export default function Root() {
               component={HomeScreenStack}
               options={{
                 tabBarIcon: ({ color, size }) => <AntDesign name="home" size={size} color={color} />,
+                tabBarBadge: badge ? '+' : null,
               }}
             />
             <Tab.Screen
