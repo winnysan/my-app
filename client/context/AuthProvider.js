@@ -10,13 +10,13 @@ export function AuthProvider({ children }) {
 
   async function login(name, password) {
     await axios
-      .post(`${URI}/login`, { name, password })
-      .then((response) => {
+      .post(`https://${URI}/login`, { name, password })
+      .then(response => {
         SecureStore.setItemAsync('user', JSON.stringify(response.data))
         setUser(response.data.user)
         console.info('[login]', response.data)
       })
-      .catch((error) => console.error(error))
+      .catch(error => console.error(error))
   }
 
   async function logout() {

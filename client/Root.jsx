@@ -1,5 +1,5 @@
 import * as SecureStore from 'expo-secure-store'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect } from 'react'
 import { AuthContext } from './context/AuthProvider'
 import { NavigationContainer } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
@@ -12,6 +12,7 @@ import NewPostScreen from './screens/NewPostScreen'
 import SettingsScreen from './screens/SettingsScreen'
 import { useSubscription } from '@apollo/client'
 import { POST_ADDED_SUBSCRIPTION } from './graphql/subscriptions'
+import { Context } from './context/ContextProvider'
 
 const Tab = createBottomTabNavigator()
 const Stack = createStackNavigator()
@@ -20,28 +21,32 @@ function HomeScreenStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false, headerBackTitleVisible: false }}>
       <Stack.Screen name="HomeScreen" component={HomeScreen} />
-      <Stack.Screen name="NewPostScreen" component={NewPostScreen} options={{ headerShown: true, headerTitle: '' }} />
+      <Stack.Screen
+        name="NewPostScreen"
+        component={NewPostScreen}
+        options={{ headerShown: true, headerTitle: '' }}
+      />
     </Stack.Navigator>
   )
 }
 
 export default function Root() {
   const { user, setUser } = useContext(AuthContext)
-  const [badge, setBadge] = useState(false)
+  const { badge, setBadge } = useContext(Context)
 
   useEffect(() => {
     SecureStore.getItemAsync('user')
-      .then((storeUser) => {
+      .then(storeUser => {
         if (storeUser) {
           setUser(JSON.parse(storeUser).user)
         }
       })
-      .catch((error) => console.error(error))
+      .catch(error => console.error(error))
   }, [])
 
   useSubscription(POST_ADDED_SUBSCRIPTION, {
-    onSubscriptionData: ({ subscriptionData }) => {
-      console.log('[subscriptionData]', subscriptionData)
+    onData: result => {
+      console.log('[POST_ADDED_SUBSCRIPTION]', result.data?.data.post)
       setBadge(true)
     },
   })
@@ -55,7 +60,9 @@ export default function Root() {
               name="Home"
               component={HomeScreenStack}
               options={{
-                tabBarIcon: ({ color, size }) => <AntDesign name="home" size={size} color={color} />,
+                tabBarIcon: ({ color, size }) => (
+                  <AntDesign name="home" size={size} color={color} />
+                ),
                 tabBarBadge: badge ? '+' : null,
               }}
             />
@@ -63,7 +70,9 @@ export default function Root() {
               name="Settings"
               component={SettingsScreen}
               options={{
-                tabBarIcon: ({ color, size }) => <AntDesign name="setting" size={size} color={color} />,
+                tabBarIcon: ({ color, size }) => (
+                  <AntDesign name="setting" size={size} color={color} />
+                ),
               }}
             />
           </Tab.Navigator>
@@ -72,7 +81,11 @@ export default function Root() {
         <NavigationContainer>
           <Stack.Navigator screenOptions={{ headerShown: false, headerBackTitleVisible: false }}>
             <Stack.Screen name="Login" component={LoginScreen} />
-            <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: true, headerTitle: '' }} />
+            <Stack.Screen
+              name="Register"
+              component={RegisterScreen}
+              options={{ headerShown: true, headerTitle: '' }}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       )}
