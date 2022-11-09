@@ -1,15 +1,35 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { formatDistanceToNowStrict } from 'date-fns'
+import locale from 'date-fns/locale/en-US'
+import formatDistance from '../utilities/formatDistance'
 
 export default function PostItem({ item: post }) {
   return (
     <View style={styles.container}>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
-        <Text style={{ fontSize: 12, color: 'gray' }}>author: {post.author.name}</Text>
-        <Text style={{ fontSize: 12, color: 'gray' }}>dateTime: {post.createdAt}</Text>
-      </View>
       <View>
-        <Text style={{ fontSize: 12 }}>{post.body}</Text>
-        <Text style={{ fontSize: 12, color: 'gray' }}>post ID: {post.id}</Text>
+        <TouchableOpacity>
+          <Image
+            style={styles.avatar}
+            source={{
+              uri: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541',
+            }}
+          />
+        </TouchableOpacity>
+      </View>
+      <View style={{ flex: 1 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
+          <Text style={{ fontSize: 12, color: 'gray' }}>author: {post.author.name}</Text>
+          <Text style={{ fontSize: 12, color: 'gray' }}>
+            published:{' '}
+            {formatDistanceToNowStrict(new Date(post.createdAt), {
+              locale: { ...locale, formatDistance },
+            })}
+          </Text>
+        </View>
+        <View>
+          <Text style={{ fontSize: 16 }}>{post.body}</Text>
+          <Text style={{ fontSize: 12, color: 'gray' }}>post ID: {post.id}</Text>
+        </View>
       </View>
     </View>
   )
@@ -17,8 +37,16 @@ export default function PostItem({ item: post }) {
 
 const styles = StyleSheet.create({
   container: {
+    flexDirection: 'row',
     backgroundColor: '#fff',
     paddingHorizontal: 16,
-    paddingVertical: 16,
+    paddingVertical: 12,
+  },
+  avatar: {
+    height: 40,
+    width: 40,
+    borderRadius: 20,
+    marginTop: 8,
+    marginRight: 16,
   },
 })
