@@ -6,7 +6,7 @@ import { createClient as createWsClient } from 'graphql-ws'
 import { setContext } from '@apollo/client/link/context'
 import { Kind } from 'graphql'
 
-export const URI = '4b18-2a01-c846-8c2-6100-6511-4f7f-505a-93bb.eu.ngrok.io'
+export const URI = 'b209-2a01-c846-8c2-6100-e43d-977b-bed2-2e63.eu.ngrok.io'
 
 const httpLink = createHttpLink({
   uri: `https://${URI}/graphql`,
