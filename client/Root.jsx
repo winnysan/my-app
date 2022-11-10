@@ -4,7 +4,7 @@ import { AuthContext } from './context/AuthProvider'
 import { NavigationContainer } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createStackNavigator } from '@react-navigation/stack'
-import { AntDesign } from '@expo/vector-icons'
+import { AntDesign, Feather } from '@expo/vector-icons'
 import LoginScreen from './screens/LoginScreen'
 import RegisterScreen from './screens/RegisterScreen'
 import HomeScreen from './screens/HomeScreen'
@@ -13,6 +13,7 @@ import SettingsScreen from './screens/SettingsScreen'
 import { useSubscription } from '@apollo/client'
 import { POST_ADDED_SUBSCRIPTION } from './graphql/subscriptions'
 import { Context } from './context/ContextProvider'
+import MapsScreen from './screens/MapsScreen'
 
 const Tab = createBottomTabNavigator()
 const Stack = createStackNavigator()
@@ -64,6 +65,15 @@ export default function Root() {
                   <AntDesign name="home" size={size} color={color} />
                 ),
                 tabBarBadge: badge ? '+' : null,
+              }}
+            />
+            <Tab.Screen
+              name="Maps"
+              component={MapsScreen}
+              options={{
+                tabBarIcon: ({ color, size }) => (
+                  <Feather name="map-pin" size={size} color={color} />
+                ),
               }}
             />
             <Tab.Screen
