@@ -1,38 +1,64 @@
 import * as Location from 'expo-location'
 import { useEffect, useState } from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import MapView, { Marker } from 'react-native-maps'
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import MapView, { Callout, Marker } from 'react-native-maps'
 import { AntDesign, Feather } from '@expo/vector-icons'
 
 export default function MapsScreen() {
+  const [locationServiceEnabled, setLocationServiceEnabled] = useState(false)
   const [origin, setOrigin] = useState(null)
   const [destination, setDestination] = useState(null)
 
-  // Banska Bystrica
-  // const [origin, setOrigin] = useState({
-  //   latitude: 48.7384028,
-  //   longitude: 19.1573494,
-  // })
-
   useEffect(() => {
-    // getLocationWithPermission()
+    checkIfLocationEnabled()
+    if (!destination) {
+      getCurrentLocation()
+    }
   }, [])
 
-  async function getLocationWithPermission() {
+  async function checkIfLocationEnabled() {
+    let enabled = await Location.hasServicesEnabledAsync()
+    console.info('[hasServicesEnabledAsync]', enabled)
+    if (!enabled) {
+      Alert.alert(
+        'Location Service not enabled',
+        'Please enable your location services to continue.',
+        [{ text: 'OK' }],
+        { cancelable: false }
+      )
+    } else {
+      setLocationServiceEnabled(enabled)
+    }
+  }
+
+  async function getCurrentLocation(coordinates = null) {
     let { status } = await Location.requestForegroundPermissionsAsync()
+    console.info('[requestForegroundPermissionsAsync]', status)
+
     if (status !== 'granted') {
-      alert('Permission denied')
+      Alert.alert(
+        'Permission not granted',
+        'Allow the app to use location service.',
+        [{ text: 'OK' }],
+        { cancelable: false }
+      )
       return
     }
-    let location = await Location.getCurrentPositionAsync({})
-    const current = {
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
-    }
-    console.log('[current location]', current)
 
-    setOrigin(current)
-    setDestination(current)
+    if (!coordinates) {
+      let { coords } = await Location.getCurrentPositionAsync({})
+      coordinates = {
+        latitude: coords.latitude,
+        longitude: coords.longitude,
+      }
+    }
+
+    let [address] = await Location.reverseGeocodeAsync(coordinates)
+    const destination = { ...coordinates, ...address }
+    console.log('[destination]', destination)
+
+    setOrigin(destination)
+    setDestination(destination)
   }
 
   return (
@@ -53,28 +79,47 @@ export default function MapsScreen() {
         {destination && (
           <Marker
             draggable
-            onDragEnd={direction => setDestination(direction.nativeEvent.coordinate)}
+            onDragEnd={direction => getCurrentLocation(direction.nativeEvent.coordinate)}
             coordinate={destination}
-          />
+            image={require('../assets/marker.png')}
+            title="hold and drag to another location"
+          >
+            <Callout tooltip>
+              <View style={{ backgroundColor: '#22222280', padding: 8 }}>
+                <Text style={{ color: '#fff' }}>hold and drag to another location</Text>
+              </View>
+            </Callout>
+          </Marker>
         )}
       </MapView>
-      <TouchableOpacity style={styles.floatingButton1} onPress={() => getLocationWithPermission()}>
-        {!destination ? (
-          <AntDesign name="plus" size={24} color="#fff" />
-        ) : (
-          <Feather name="map-pin" size={24} color={'#fff'} />
-        )}
-      </TouchableOpacity>
-      {destination && (
+
+      {locationServiceEnabled ? (
         <>
-          <TouchableOpacity style={styles.floatingButton2} onPress={() => setDestination(null)}>
-            <AntDesign name="minus" size={24} color="#fff" />
+          <TouchableOpacity style={styles.floatingButton1} onPress={() => getCurrentLocation()}>
+            {!destination ? (
+              <AntDesign name="plus" size={24} color="#fff" />
+            ) : (
+              <Feather name="map-pin" size={24} color={'#fff'} />
+            )}
           </TouchableOpacity>
-          <View style={styles.coordinates}>
-            <Text style={{ fontSize: 16, color: '#fff' }}>lat: {destination.latitude}</Text>
-            <Text style={{ fontSize: 16, color: '#fff' }}>lng: {destination.longitude}</Text>
-          </View>
+          {destination && (
+            <>
+              <TouchableOpacity style={styles.floatingButton2} onPress={() => setDestination(null)}>
+                <AntDesign name="minus" size={24} color="#fff" />
+              </TouchableOpacity>
+              <View style={styles.coordinates}>
+                <Text style={{ fontSize: 16, color: '#fff' }}>city: {destination.city}</Text>
+                <Text style={{ fontSize: 16, color: '#fff' }}>name: {destination.name}</Text>
+                <Text style={{ fontSize: 16, color: '#fff' }}>lat: {destination.latitude}</Text>
+                <Text style={{ fontSize: 16, color: '#fff' }}>lng: {destination.longitude}</Text>
+              </View>
+            </>
+          )}
         </>
+      ) : (
+        <View style={styles.coordinates}>
+          <Text style={{ fontSize: 16, color: '#fff' }}>Location Service not enabled</Text>
+        </View>
       )}
     </View>
   )
