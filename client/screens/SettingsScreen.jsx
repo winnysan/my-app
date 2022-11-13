@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { Text, TouchableOpacity, View } from 'react-native'
+import { SafeAreaView, Text, TouchableOpacity, View } from 'react-native'
 import AddAvatar from '../components/AddAvatar'
 import { AuthContext } from '../context/AuthProvider'
 
@@ -7,12 +7,18 @@ export default function SettingsScreen() {
   const { logout } = useContext(AuthContext)
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <SafeAreaView style={{ flex: 1, marginTop: 40 }}>
+      <View>
+        <Text style={{ fontSize: 32, marginBottom: 40, paddingHorizontal: 20 }}>Profile</Text>
+      </View>
+
       <AddAvatar />
 
-      <TouchableOpacity onPress={() => logout()}>
-        <Text>Logout</Text>
-      </TouchableOpacity>
-    </View>
+      <View style={{ marginVertical: 40, paddingHorizontal: 20 }}>
+        <TouchableOpacity onPress={() => logout()}>
+          <Text>Logout</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   )
 }

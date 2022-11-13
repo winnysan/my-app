@@ -8,12 +8,7 @@ export default function PostItem({ item: post }) {
     <View style={styles.container}>
       <View>
         <TouchableOpacity>
-          <Image
-            style={styles.avatar}
-            source={{
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541',
-            }}
-          />
+          <Image style={styles.avatar} source={require('../assets/avatar.png')} />
         </TouchableOpacity>
       </View>
       <View style={{ flex: 1 }}>

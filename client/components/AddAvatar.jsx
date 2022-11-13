@@ -1,9 +1,10 @@
 import * as ImagePicker from 'expo-image-picker'
 import * as ImageManipulator from 'expo-image-manipulator'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { ActivityIndicator, Alert, Image, Text, TouchableOpacity, View } from 'react-native'
 import { ADD_AVATAR } from '../graphql/mutations'
 import { useMutation } from '@apollo/client'
+import { Feather } from '@expo/vector-icons'
 
 export default function AddAvatar() {
   const [loading, setLoading] = useState(false)
@@ -84,23 +85,29 @@ export default function AddAvatar() {
   }
 
   return (
-    <View>
-      <Text>Add Image</Text>
-      <Image source={{ uri: avatar }} style={{ width: 200, height: 200 }} />
-      {loading ? (
-        <View>
-          <ActivityIndicator size="large" color="gray" />
+    <>
+      <View>
+        <View style={{ alignItems: 'center' }}>
+          <Image
+            source={avatar ? { uri: avatar } : require('../assets/avatar.png')}
+            style={{ width: 200, height: 200, borderRadius: 100 }}
+          />
         </View>
-      ) : (
-        <View>
-          <TouchableOpacity onPress={() => pickAvatar()}>
-            <Text>Pick avatar</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => takeAvatar()}>
-            <Text>Take avatar</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-    </View>
+        {loading ? (
+          <View style={{ marginVertical: 40 }}>
+            <ActivityIndicator size="large" color="gray" />
+          </View>
+        ) : (
+          <View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: 20 }}>
+            <TouchableOpacity onPress={() => pickAvatar()} style={{ padding: 15 }}>
+              <Feather name="image" size={32} color="black" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => takeAvatar()} style={{ padding: 15 }}>
+              <Feather name="camera" size={32} color="black" />
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
+    </>
   )
 }
