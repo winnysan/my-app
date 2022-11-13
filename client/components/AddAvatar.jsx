@@ -1,7 +1,7 @@
 import * as ImagePicker from 'expo-image-picker'
 import * as ImageManipulator from 'expo-image-manipulator'
 import { useState } from 'react'
-import { ActivityIndicator, Image, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Alert, Image, Text, TouchableOpacity, View } from 'react-native'
 import { ADD_AVATAR } from '../graphql/mutations'
 import { useMutation } from '@apollo/client'
 
@@ -16,15 +16,26 @@ export default function AddAvatar() {
 
   function handleSubmit() {
     setLoading(true)
+    if (!avatar && !avatarBase64) return
     addAvatarMutation()
       .then(result => {
         setLoading(false)
-        console.log('[addAvatar] success', result)
+        console.info('[addAvatar] submit success', result.data?.addAvatar.id)
       })
       .catch(error => {
         setLoading(false)
-        console.error('[addAvatar]', error)
+        console.error('[addAvatar] submit error', error)
       })
+  }
+
+  async function manipulateImage(result) {
+    let manipulatedImage = await ImageManipulator.manipulateAsync(
+      result.assets[0].uri,
+      [{ resize: { width: 200, height: 200 } }],
+      { base64: true, compress: 0.8 }
+    )
+    setAvatar(manipulatedImage.uri)
+    setAvatarBase64(manipulatedImage.base64)
   }
 
   async function pickAvatar() {
@@ -36,29 +47,39 @@ export default function AddAvatar() {
       aspect: [1, 1],
       quality: 1,
     })
-    console.log('[pickAvatar]', result)
 
     if (!result.canceled) {
-      let manipulatedImage = await ImageManipulator.manipulateAsync(
-        result.assets[0].uri,
-        [{ resize: { width: 400, height: 400 } }],
-        { base64: true, compress: 0.8 }
-      )
-      setAvatar(manipulatedImage.uri)
-      setAvatarBase64(manipulatedImage.base64)
+      manipulateImage(result)
+      handleSubmit()
     }
     setLoading(false)
   }
 
   async function takeAvatar() {
     setLoading(true)
+    let { status } = await ImagePicker.requestCameraPermissionsAsync()
+    console.info('[requestCameraPermissionsAsync]', status)
+
+    if (status !== 'granted') {
+      Alert.alert(
+        'Permission not granted',
+        'Allow the app to use camera service.',
+        [{ text: 'OK' }],
+        { cancelable: false }
+      )
+      return
+    }
+
     let result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
       aspect: [1, 1],
       quality: 1,
     })
 
-    console.log('[takeAvatar]', result)
+    if (!result.canceled) {
+      manipulateImage(result)
+      handleSubmit()
+    }
     setLoading(false)
   }
 
@@ -77,9 +98,6 @@ export default function AddAvatar() {
           </TouchableOpacity>
           <TouchableOpacity onPress={() => takeAvatar()}>
             <Text>Take avatar</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleSubmit()}>
-            <Text>Submit</Text>
           </TouchableOpacity>
         </View>
       )}

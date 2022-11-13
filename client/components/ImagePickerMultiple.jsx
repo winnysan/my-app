@@ -8,21 +8,20 @@ export default function ImagePickerMultiple() {
   const { width } = useWindowDimensions()
 
   async function pickImages() {
-    setIsLoading(true)
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsMultipleSelection: true,
-      allowsEditing: false,
-      selectionLimit: 5,
-      aspect: [4, 3],
-      quality: 1,
-    })
-    setIsLoading(false)
-    console.log(result)
-
-    if (!result.cancelled) {
-      setImages(result.uri ? [result.uri] : result.selected)
-    }
+    // setIsLoading(true)
+    // let result = await ImagePicker.launchImageLibraryAsync({
+    //   mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    //   allowsMultipleSelection: true,
+    //   allowsEditing: false,
+    //   selectionLimit: 5,
+    //   aspect: [4, 3],
+    //   quality: 1,
+    // })
+    // setIsLoading(false)
+    // console.log(result)
+    // if (!result.cancelled) {
+    //   setImages(result.uri ? [result.uri] : result.selected)
+    // }
   }
 
   return (
