@@ -44,6 +44,22 @@ export const resolvers = {
       pubSub.publish('POST_ADDED', { postAdded: post })
       return post
     },
+    addAvatar: async (_parent, args, context) => {
+      if (!context.req.auth) {
+        throw new Error('Unauthorized')
+      }
+      const userId = context.req.auth.sub
+      const user = await context.prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          avatar: args.avatar,
+        },
+      })
+      console.log(user)
+      return user
+    },
   },
 
   Subscription: {

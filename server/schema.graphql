@@ -8,6 +8,7 @@ type Query {
 type Mutation {
   register(input: registerInput): User
   createPost(body: String!): Post
+  addAvatar(avatar: String!): User
 }
 
 type Subscription {
@@ -19,6 +20,7 @@ type User {
   name: String!
   password: String!
   posts: [Post!]!
+  avatar: String
 }
 
 type Post {

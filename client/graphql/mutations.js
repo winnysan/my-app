@@ -13,3 +13,12 @@ export const CREATE_POST = gql`
     }
   }
 `
+
+export const ADD_AVATAR = gql`
+  mutation addAvatar($avatar: String!) {
+    addAvatar(avatar: $avatar) {
+      id
+      avatar
+    }
+  }
+`

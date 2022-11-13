@@ -20,7 +20,7 @@ export default function ImagePickerMultiple() {
     setIsLoading(false)
     console.log(result)
 
-    if (!result.canceled) {
+    if (!result.cancelled) {
       setImages(result.uri ? [result.uri] : result.selected)
     }
   }
