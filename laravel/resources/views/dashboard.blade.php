@@ -14,4 +14,10 @@
             </div>
         </div>
     </div>
+
+    <script>
+        window.addEventListener('load', () => {
+            console.log('load')
+        })
+    </script>
 </x-app-layout>
