@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\NewThingAvailable;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -28,4 +29,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+Route::get('/broadcast', function () {
+    NewThingAvailable::dispatch('It works');
+});
+
+require __DIR__ . '/auth.php';
