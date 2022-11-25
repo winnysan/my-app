@@ -20,6 +20,10 @@
             Echo.channel('things').listen('NewThingAvailable', (event) => {
                 console.log(event)
             })
+
+            Echo.private('App.Models.User.{{ auth()->id() }}').listen('OrderDispatched', (event) => {
+                console.log(event)
+            })
         })
     </script>
 </x-app-layout>

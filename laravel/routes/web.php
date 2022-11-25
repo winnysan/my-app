@@ -1,7 +1,9 @@
 <?php
 
 use App\Events\NewThingAvailable;
+use App\Events\OrderDispatched;
 use App\Http\Controllers\ProfileController;
+use App\Models\Order;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,6 +33,10 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/broadcast', function () {
     NewThingAvailable::dispatch('It works');
+});
+
+Route::get('/broadcast/private', function () {
+    OrderDispatched::dispatch(Order::find(1));
 });
 
 require __DIR__ . '/auth.php';
