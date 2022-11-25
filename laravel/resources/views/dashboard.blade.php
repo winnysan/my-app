@@ -17,7 +17,9 @@
 
     <script>
         window.addEventListener('load', () => {
-            console.log('load')
+            Echo.channel('things').listen('NewThingAvailable', (event) => {
+                console.log(event)
+            })
         })
     </script>
 </x-app-layout>
