@@ -4,6 +4,7 @@ use App\Events\NewThingAvailable;
 use App\Events\OrderDispatched;
 use App\Http\Controllers\ProfileController;
 use App\Models\Order;
+use App\Models\Post;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -37,6 +38,15 @@ Route::get('/broadcast', function () {
 
 Route::get('/broadcast/private', function () {
     OrderDispatched::dispatch(Order::find(1));
+});
+
+Route::middleware('auth:sanctum')->get('/new', function () {
+    $post = Post::create([
+        'user_id' => auth()->id(),
+        'body' => 'Random ' . rand(1111, 9999)
+    ]);
+    // \Nuwave\Lighthouse\Execution\Utils\Subscription::broadcast('postCreated', $post);
+    return $post;
 });
 
 require __DIR__ . '/auth.php';
