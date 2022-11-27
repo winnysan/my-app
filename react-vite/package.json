@@ -10,7 +10,11 @@
   },
   "dependencies": {
     "@apollo/client": "^3.7.1",
+    "@thekonz/apollo-lighthouse-subscription-link": "^1.3.0",
     "graphql": "^16.6.0",
+    "graphql-ws": "^5.11.2",
+    "laravel-echo": "^1.14.2",
+    "pusher-js": "^7.5.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

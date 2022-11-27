@@ -54,5 +54,5 @@ type Post {
 }
 
 type Subscription {
-    postCreated(user: ID): Post
+    postCreated: Post
 }
